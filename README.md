@@ -20,6 +20,8 @@ Outcome: the email authenticated correctly and no tool flagged it as malicious. 
 | Date | Thu, 5 Nov 2026 |
 | Found in | Gmail **Spam** folder |
 
+![The spam email as received in Gmail — "Take the next step toward your goal" (recipient redacted)](original-email.png)
+
 ## Step 1 — Authentication (SPF / DKIM / DMARC)
 
 From the raw headers ("Show original"):
@@ -30,11 +32,15 @@ From the raw headers ("Show original"):
 | DKIM | **PASS** (`jobaidcenter.com`) | Genuinely signed by the domain, not forged |
 | DMARC | **PASS** | Visible "From" matches the authenticated domain |
 
+![Gmail "Show original" showing SPF, DKIM, and DMARC all passing](email-headers-auth.png)
+
 **Key insight:** All three passing means the email is authentic to its sending domain and was not spoofed but it does not mean the sender is trustworthy. A spammer can register a throwaway domain and configure SPF/DKIM/DMARC correctly so everything "passes." Therefore, this not brand impersonation; it is authenticated mail from a real but low-reputation sender.
 
 ## Step 2 — Sender and domain reputation
 - Domain jobaidcenter[.]com - VirusTotal: 0 / 92 vendors flagged it malicious; domain created ~9 months ago. A clean record, but young and unestablished ("not reported" does not mean "safe").
 - Sending IP 193.37.47[.]61 — reported as hosted in Bulgaria. An unknown "job aid" sender emailing a US inbox from foreign mail infrastructure is a soft suspicion signal, not proof of anything on its own.
+
+![VirusTotal domain report for jobaidcenter.com: 0 of 92 vendors flagged it, created about 9 months ago](virustotal-domain.png)
 
 ## Step 3 — Link analysis
 The email body contained a click-tracking link. The URL was defanged for this writeup and the real URL scanned in urlscan.io (unlisted):
@@ -43,6 +49,8 @@ The email body contained a click-tracking link. The URL was defanged for this wr
 - urlscan verdict: No classification (not flagged malicious).
 - Link host: 96.44.184[.]245 — United States, HostPapa (a cheap US host commonly used for bulk mail).
 - Only 2 HTTP transactions, 1 domain — a simple redirect, not a credential-capture kit. No fake login page.
+
+![urlscan.io summary: no malicious classification, link host in the US (ColoCrossing/HostPapa)](urlscan-summary.png)
 
 ## Indicators of Compromise (IOCs)
 
